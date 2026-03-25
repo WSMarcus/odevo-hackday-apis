@@ -1,0 +1,44 @@
+body, button {
+  font-family: "Poppins", sans-serif;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  background: blue;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.characters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.characters .character {
+  border: 1px solid blue;
+  border-radius: 20px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.characters .character p {
+  margin: 4px;
+}
+
+.character img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  margin-top: auto;
+}
