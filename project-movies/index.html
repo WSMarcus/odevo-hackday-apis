@@ -16,43 +16,20 @@
 
 <body>
   <h1>Movies API</h1>
-  
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab-button active" data-tab="all-movies">All Movies</button>
-    <button class="tab-button" data-tab="mood-picker">Movie Picker</button>
+  <button id="openMoodPickerBtn" class="mood-picker-button">Mood Picker ▼</button>
+
+  <div id="mood-dropdown" class="mood-dropdown hidden">
+    <p>Select mood:</p>
+    <button class="mood-option" data-mood="happy">😊 Happy</button>
+    <button class="mood-option" data-mood="sad">😢 Sad</button>
+    <button class="mood-option" data-mood="annoyed">😤 Annoyed</button>
+    <button class="mood-option" data-mood="neutral">😐 Neutral</button>
   </div>
-  
+
   <!-- All Movies Section -->
-  <section
-    id="movies"
-    class="movies tab-content active"
-    data-tab="all-movies"
-  ></section>
-  
-  <!-- Mood Picker Section -->
-  <section id="mood-picker" class="tab-content" data-tab="mood-picker">
-    <div class="mood-picker-container">
-      <h2>What's your mood?</h2>
-      <p>Tell us how you're feeling and we'll suggest the perfect movie for you!</p>
-      <div class="mood-buttons">
-        <button class="mood-button" data-mood="happy">😊 Happy</button>
-        <button class="mood-button" data-mood="sad">😢 Sad</button>
-        <button class="mood-button" data-mood="annoyed">😤 Annoyed</button>
-        <button class="mood-button" data-mood="neutral">😐 Neutral</button>
-      </div>
-      <div id="mood-result" class="mood-result" style="display: none;">
-        <div class="mood-suggested-movie"></div>
-        <div class="mood-feedback">
-          <p>Happy with this mood?</p>
-          <div class="mood-feedback-buttons">
-            <button class="feedback-button yes-button">Yes, I'm satisfied!</button>
-            <button class="feedback-button change-button">No, suggest something different</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <section id="movies" class="movies"></section>
+
+  <div id="mood-result" class="mood-result hidden"></div>
   
   <!-- Modal -->
   <div id="movieModal" class="modal">

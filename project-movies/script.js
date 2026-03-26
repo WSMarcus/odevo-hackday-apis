@@ -9,6 +9,12 @@ const modal = document.getElementById("movieModal")
 const modalContent = document.getElementById("modalContent")
 const closeBtn = document.querySelector(".close-btn")
 
+const openMoodPickerBtn = document.getElementById("openMoodPickerBtn")
+const moodDropdown = document.getElementById("mood-dropdown")
+const moodResult = document.getElementById("mood-result")
+
+let allMovies = []
+
 const fetchMovies = () => {
   fetch(URL)
     .then((response) => {
@@ -16,12 +22,65 @@ const fetchMovies = () => {
     })
     .then((data) => {
       console.log(data)
-      displayMovies(data.results)
+      allMovies = data.results || []
+      displayMovies(allMovies)
     })
     .catch((error) => {
       console.error("Error fetching movies:", error)
     })
 }
+
+const toggleMoodDropdown = () => {
+  moodDropdown.classList.toggle("hidden")
+}
+
+openMoodPickerBtn.addEventListener("click", toggleMoodDropdown)
+
+const closeMoodDropdown = () => {
+  moodDropdown.classList.add("hidden")
+}
+
+const moodSelectorButtons = document.querySelectorAll(".mood-option")
+
+moodSelectorButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const mood = button.getAttribute("data-mood")
+    const selectedClass = "selected"
+    moodSelectorButtons.forEach(btn => btn.classList.remove(selectedClass))
+    button.classList.add(selectedClass)
+
+    const filteredMovies = allMovies.filter(movie => {
+      return movie.genre_ids && movie.genre_ids.some(id => moodGenres[mood].includes(id))
+    })
+
+    if (filteredMovies.length > 0) {
+      displayMovies(filteredMovies)
+      showMoodResult(mood, filteredMovies)
+    } else {
+      moodResult.innerHTML = `<p>No movies found for mood '${mood}', showing all instead.</p>`
+      displayMovies(allMovies)
+    }
+
+    closeMoodDropdown()
+  })
+})
+
+const showMoodResult = (mood, filteredMovies) => {
+  const moodText = mood.charAt(0).toUpperCase() + mood.slice(1)
+  moodResult.classList.remove("hidden")
+  moodResult.innerHTML = `
+    <div class="mood-result-content">
+      <p>Showing ${filteredMovies.length} movies for mood: <strong>${moodText}</strong></p>
+      <button id="resetMoodFilter" class="reset-mood-filter">Reset filter</button>
+    </div>
+  `
+  document.getElementById("resetMoodFilter").addEventListener("click", () => {
+    moodResult.classList.add("hidden")
+    moodSelectorButtons.forEach(btn => btn.classList.remove("selected"))
+    displayMovies(allMovies)
+  })
+}
+
 
 const fetchMovieDetails = (movieId) => {
   const detailsURL = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=credits`
@@ -204,41 +263,6 @@ const contrastingMoods = {
 }
 
 let currentMood = null
-
-// Tab switching
-document.querySelectorAll(".tab-button").forEach(button => {
-  button.addEventListener("click", () => {
-    const tabName = button.getAttribute("data-tab")
-    switchTab(tabName)
-  })
-})
-
-const switchTab = (tabName) => {
-  // Hide all tab contents
-  document.querySelectorAll(".tab-content").forEach(content => {
-    content.classList.remove("active")
-  })
-  
-  // Remove active class from all buttons
-  document.querySelectorAll(".tab-button").forEach(btn => {
-    btn.classList.remove("active")
-  })
-  
-  // Show selected tab
-  document.querySelector(`[data-tab="${tabName}"]`).classList.add("active")
-  
-  // Mark button as active
-  document.querySelector(`[data-tab="${tabName}"].tab-button`).classList.add("active")
-}
-
-// Mood picker button listeners
-document.querySelectorAll(".mood-button").forEach(button => {
-  button.addEventListener("click", () => {
-    const mood = button.getAttribute("data-mood")
-    currentMood = mood
-    fetchMoodBasedMovie(mood, false)
-  })
-})
 
 const fetchMoodBasedMovie = (mood, isContrasting = false) => {
   const genreIds = isContrasting ? moodGenres[contrastingMoods[mood]] : moodGenres[mood]
